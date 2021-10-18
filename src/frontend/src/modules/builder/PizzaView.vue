@@ -21,9 +21,9 @@
             <div
               :class="`pizza__filling pizza__filling--${ingredientClass(
                 ingredient.image
-              )} pizza__filling--third`"
-              v-for="(ingredient, i) in product.ingredients"
-              :key="i"
+              )}`"
+              v-for="ingredient in product.ingredients"
+              :key="ingredient.id"
             ></div>
           </div>
         </div>
@@ -90,24 +90,10 @@ export default {
     },
 
     onDrop(evt) {
-      const itemID = evt.dataTransfer.getData("itemId");
-      let ingredient = JSON.parse(itemID);
-      this.handlerDropItems(ingredient);
+      let itemIndex = evt.dataTransfer.getData("itemIndex");
+      this.$emit("add-drop-item", JSON.parse(itemIndex));
     },
 
-    handlerDropItems(ingredient) {
-      let result = this.product.ingredients.find(
-        (item) => item.id === ingredient.id
-      );
-      if (result) {
-        if (result.quantity < 3) {
-          result.quantity++;
-        }
-      } else {
-        ingredient.quantity++;
-        this.$emit("change-count", ingredient.id);
-      }
-    },
     submit() {
       let order = {};
       order.product = this.product;

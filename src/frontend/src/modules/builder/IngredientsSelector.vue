@@ -11,11 +11,15 @@
 
           <ul class="ingredients__list">
             <ingredient
-              v-for="ingredient in ingredients"
-              :key="ingredient.id"
-              :item="ingredient"
+              v-for="(item, index) in items"
+              :key="item.id"
+              :item="item"
+              :index="index"
               @add-items="addItems"
               @start-drag="startDrag"
+              @add-ingredient="addIngredient"
+              @remove-ingredient="removeIngredient"
+              @validate-quantity="validateQuantity"
             />
           </ul>
         </div>
@@ -40,33 +44,31 @@ export default {
   },
   data() {
     return {
-      ingredientsList: this.ingredients,
       selected: [],
+      items: this.ingredients,
     };
   },
-  mounted() {
-    this.ingredients.forEach((ingredient) => {
-      this.$set(ingredient, "quantity", 0);
-    });
-    console.log(this.$refs);
-  },
   methods: {
-    ingredientClass(href) {
-      let arr = href.split("/");
-      arr = arr[arr.length - 1].split(".");
-      return arr[0];
-    },
-
-    removeIngredient(ingredient) {
-      if (ingredient.quantity >= 1) ingredient.quantity--;
+    validateQuantity(index) {
+      if (this.items[index].quantity > 3) {
+        this.items[index].quantity = 3;
+      } else if (this.items[index].quantity < 1) {
+        this.items[index].quantity = 0;
+      }
       this.addItems();
     },
-
-    addIngredient(ingredient) {
-      ingredient.quantity++;
-      this.addItems();
+    addIngredient(index) {
+      if (this.items[index].quantity < 3) {
+        this.items[index].quantity++;
+        this.addItems();
+      }
     },
-
+    removeIngredient(index) {
+      if (this.items[index].quantity >= 1) {
+        this.items[index].quantity--;
+        this.addItems();
+      }
+    },
     addItems() {
       this.$emit(
         "add-items",
@@ -74,10 +76,10 @@ export default {
         "ingredients"
       );
     },
-    startDrag(evt, item) {
+    startDrag(evt, index) {
       evt.dataTransfer.dropEffect = "move";
       evt.dataTransfer.effectAllowed = "move";
-      evt.dataTransfer.setData("itemId", JSON.stringify(item));
+      evt.dataTransfer.setData("itemIndex", JSON.stringify(index));
     },
   },
 };

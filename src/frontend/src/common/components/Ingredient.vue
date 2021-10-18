@@ -2,7 +2,7 @@
   <li
     class="ingredients__item drag-el"
     :draggable="ingredient.quantity < 3"
-    @dragstart="startDrag($event, ingredient)"
+    @dragstart="startDrag($event, index)"
     :style="`cursor: ${ingredient.quantity < 3 ? 'pointer' : 'default'}`"
   >
     <span :class="`filling filling--` + ingredientClass(ingredient.image)">{{
@@ -14,7 +14,7 @@
         type="button"
         class="counter__button counter__button--minus"
         :disabled="ingredient.quantity < 1"
-        @click="removeIngredient(ingredient)"
+        @click="removeIngredient"
       >
         <span class="visually-hidden">Меньше</span>
       </button>
@@ -30,7 +30,7 @@
       <button
         type="button"
         class="counter__button counter__button--plus"
-        @click="addIngredient(ingredient)"
+        @click="addIngredient"
         :disabled="this.ingredient.quantity >= 3"
       >
         <span class="visually-hidden">Больше</span>
@@ -47,6 +47,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    index: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -58,13 +62,14 @@ export default {
       return this.ingredient.quantity;
     },
   },
-
   watch: {
+    //реагируем на изменение количества и шлём наверх
     quantity() {
-      this.addItems();
+      this.$emit("add-items");
     },
   },
   methods: {
+    //обработчик селектора для иконки ингридиента
     ingredientClass(href) {
       let arr = href.split("/");
       arr = arr[arr.length - 1].split(".");
@@ -72,30 +77,19 @@ export default {
     },
     // Контролируем количество у текущего ингридиента
     validateCount() {
-      if (this.ingredient.quantity > 3) {
-        this.ingredient.quantity = 3;
-      } else if (this.ingredient.quantity < 1) {
-        this.ingredient.quantity = 0;
-      }
-      this.addItems();
+      this.$emit("validate-quantity", this.index);
     },
-
-    removeIngredient(ingredient) {
-      if (ingredient.quantity >= 1) ingredient.quantity--;
-      this.addItems();
+    //удаляем ингридиент
+    removeIngredient() {
+      this.$emit("remove-ingredient", this.index);
     },
-
-    addIngredient(ingredient) {
-      if (ingredient.quantity < 3) {
-        ingredient.quantity++;
-        this.addItems();
-      }
+    //добавляем ингридиент
+    addIngredient() {
+      this.$emit("add-ingredient", this.index);
     },
-    startDrag(evt, ingredient) {
-      this.$emit("start-drag", evt, ingredient);
-    },
-    addItems() {
-      this.$emit("add-items");
+    //обработчик начала перетаскивания
+    startDrag(evt, index) {
+      this.$emit("start-drag", evt, index);
     },
   },
 };

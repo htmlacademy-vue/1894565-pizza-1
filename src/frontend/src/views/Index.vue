@@ -18,8 +18,8 @@
           </ingredients-selector>
           <pizza-view
             :pizza="pizza"
-            @change-count="changeCount"
-            @submit="submi"
+            @add-drop-item="addDropElement"
+            @submit="submit"
           />
         </div>
       </form>
@@ -57,21 +57,25 @@ export default {
       },
     };
   },
+
+  mounted() {
+    this.componentsPizza.ingredients.forEach((ingredient) => {
+      this.$set(ingredient, "quantity", 0);
+    });
+  },
+
   methods: {
     addItem(item, type) {
       this.pizza[type] = item;
     },
-    changeCount(id) {
-      let ingredient = this.componentsPizza.ingredients.find(
-        (item) => item.id === id
-      );
-      if (ingredient) {
-        ingredient.quantity++;
-      }
+
+    addDropElement(index) {
+      this.componentsPizza.ingredients[index].quantity++;
     },
+
     submit(order) {
       console.log(order);
-      //TODO далее запрос на бэк
+      //TODO далее запрос на бэк или вуекс
     },
   },
 };
