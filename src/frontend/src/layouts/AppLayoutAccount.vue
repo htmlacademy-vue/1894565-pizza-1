@@ -2,7 +2,7 @@
   <div>
     <Header />
     <div>
-      <router-view />
+      <slot />
       <side-bar />
     </div>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 import Header from "./components/Header";
-import SideBar from "./components/SideBarProfile";
+import SideBar from "./components/SideBarAccount";
 export default {
   name: "AppLayoutAccount",
   components: {

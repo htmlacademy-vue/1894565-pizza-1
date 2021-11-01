@@ -1,7 +1,7 @@
 <template>
   <form method="post" class="layout-form">
     <Header />
-    <router-view />
+    <slot />
     <Footer class="footer" />
   </form>
 </template>
