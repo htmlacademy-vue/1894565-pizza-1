@@ -76,6 +76,8 @@ export default {
     submit(order) {
       console.log(order);
       //TODO далее запрос на бэк или вуекс
+      //...
+      this.$router.push("Orders");
     },
   },
 };
