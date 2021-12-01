@@ -11,7 +11,6 @@
 
     <div class="counter counter--orange ingredients__counter">
       <quantity-selection
-        :index="index"
         @manual-change="manualChange"
         @reduce-number="reduceNumber"
         @increase-number="increaseNumber"

@@ -7,7 +7,7 @@
         <dough
           v-for="dough in doughs"
           :key="dough.id"
-          :data="selected.dough"
+          :data="selected"
           :dough="dough"
           @add-item="addItem"
         />

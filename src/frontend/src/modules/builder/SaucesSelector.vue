@@ -5,7 +5,7 @@
     <Sauce
       v-for="sauce in sauces"
       :key="sauce.id"
-      :data="selected.sauce"
+      :data="selected"
       :sauce="sauce"
       @add-item="addItem"
     />

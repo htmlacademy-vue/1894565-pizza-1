@@ -14,7 +14,6 @@
 
         <div class="additional-list__footer">
           <quantity-selection
-            :index="index"
             @manual-change="manualChange"
             @reduce-number="reduceNumber"
             @increase-number="increaseNumber"
@@ -55,17 +54,24 @@ export default {
       let arr = href.split("/");
       return arr[arr.length - 1];
     },
-    manualChange(payload) {
-      payload.field = "additional_products";
-      this.$emit("manual-change", payload);
+    manualChange() {
+      this.$emit("manual-change", {
+        field: "additional_products",
+        quantity: this.product.quantity,
+        index: this.index,
+      });
     },
-    increaseNumber(payload) {
-      payload.field = "additional_products";
-      this.$emit("increase-number", payload);
+    increaseNumber() {
+      this.$emit("increase-number", {
+        field: "additional_products",
+        index: this.index,
+      });
     },
-    reduceNumber(payload) {
-      payload.field = "additional_products";
-      this.$emit("reduce-number", payload);
+    reduceNumber() {
+      this.$emit("reduce-number", {
+        field: "additional_products",
+        index: this.index,
+      });
     },
   },
 };

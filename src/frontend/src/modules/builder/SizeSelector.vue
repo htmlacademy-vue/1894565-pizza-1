@@ -7,7 +7,7 @@
           v-for="item in sizes"
           :key="item.id"
           :size="item"
-          :data="selected.size"
+          :data="selected"
           @add-item="addItem"
         />
       </div>

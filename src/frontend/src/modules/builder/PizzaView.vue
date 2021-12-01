@@ -18,13 +18,27 @@
           )}-${sauceClass(pizza.sauce.name)}`"
         >
           <div class="pizza__wrapper">
-            <div
-              :class="`pizza__filling pizza__filling--${ingredientClass(
-                ingredient.image
-              )}`"
-              v-for="ingredient in pizza.ingredients"
-              :key="ingredient.id"
-            ></div>
+            <div v-for="ingredient in pizza.ingredients" :key="ingredient.id">
+              <div
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} `"
+              ></div>
+
+              <div
+                v-if="ingredient.quantity === 2"
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} pizza__filling--second`"
+              ></div>
+
+              <div
+                v-if="ingredient.quantity === 3"
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} pizza__filling--third`"
+              ></div>
+            </div>
           </div>
         </div>
       </div>

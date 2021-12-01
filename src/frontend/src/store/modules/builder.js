@@ -23,6 +23,17 @@ export default {
       state.pizza = payload;
     },
 
+    setQuantity(state) {
+      let countable_ingredients = [];
+
+      state.components.ingredients.forEach((ingredient) => {
+        countable_ingredients.push(
+          Object.assign({}, ingredient, { quantity: 0 })
+        );
+      });
+      state.components.ingredients = countable_ingredients;
+    },
+
     clearPizza(state) {
       state.pizza = {
         title: "",
@@ -59,7 +70,6 @@ export default {
 
       if (ingredient) {
         ingredient.quantity--;
-        console.log(ingredient);
         if (ingredient.quantity === 0) {
           state.pizza.ingredients = state.pizza.ingredients.filter(
             (elem) => elem.id !== ingredient.id
@@ -116,6 +126,10 @@ export default {
 
     setDefault({ commit }, payload) {
       commit("setDefault", payload);
+    },
+
+    setQuantity({ commit }) {
+      commit("setQuantity");
     },
 
     clearPizza({ commit }) {

@@ -7,12 +7,12 @@
 
           <dough-selector
             :doughs="components.dough"
-            :selected="pizza"
+            :selected="pizza.dough"
             @add-item="addItem"
           />
           <size-selector
             :sizes="components.sizes"
-            :selected="pizza"
+            :selected="pizza.size"
             @add-item="addItem"
           />
           <ingredients-selector
@@ -24,7 +24,7 @@
           >
             <sauces-selector
               :sauces="components.sauces"
-              :selected="pizza"
+              :selected="pizza.sauce"
               @add-item="addItem"
             />
           </ingredients-selector>
@@ -74,8 +74,6 @@ export default {
   },
 
   mounted() {
-    this.ingredients = this.components.ingredients;
-
     if (this.id) {
       let changedPizza = this.getPizza(parseInt(this.id));
 
@@ -93,9 +91,7 @@ export default {
       this.$store.dispatch("setDefault", false).then(() => {
         this.previewKey++;
       });
-      this.ingredients.forEach((ingredient) => {
-        this.$set(ingredient, "quantity", 0);
-      });
+      this.$store.dispatch("setQuantity");
     }
   },
 

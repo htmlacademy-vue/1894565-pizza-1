@@ -39,10 +39,6 @@ export default {
       type: Number,
       default: 20,
     },
-    index: {
-      type: Number,
-      required: true,
-    },
     field: {
       type: String,
       required: "",
@@ -57,18 +53,15 @@ export default {
   methods: {
     // Контролируем количество у текущего элемента, если его изменили в ручную
     manualChange() {
-      this.$emit("manual-change", {
-        quantity: this.data[this.field],
-        index: this.index,
-      });
+      this.$emit("manual-change");
     },
     //отнять
     reduceNumber() {
-      this.$emit("reduce-number", { index: this.index });
+      this.$emit("reduce-number");
     },
     //прибавить
     increaseNumber() {
-      this.$emit("increase-number", { index: this.index });
+      this.$emit("increase-number");
     },
   },
 };
