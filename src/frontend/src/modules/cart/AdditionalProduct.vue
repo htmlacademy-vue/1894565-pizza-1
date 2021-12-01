@@ -54,10 +54,10 @@ export default {
       let arr = href.split("/");
       return arr[arr.length - 1];
     },
-    manualChange() {
+    manualChange(value) {
       this.$emit("manual-change", {
         field: "additional_products",
-        quantity: this.product.quantity,
+        quantity: value,
         index: this.index,
       });
     },

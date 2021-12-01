@@ -81,10 +81,10 @@ export default {
   },
 
   methods: {
-    manualChange() {
+    manualChange(value) {
       this.$emit("manual-change", {
         field: "products",
-        quantity: this.pizza.quantity,
+        quantity: value,
         index: this.index,
       });
     },

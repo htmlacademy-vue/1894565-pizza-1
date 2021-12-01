@@ -9,10 +9,10 @@
       <span class="visually-hidden">Меньше</span>
     </button>
     <input
-      v-model="data[field]"
       type="text"
       name="counter"
       class="counter__input"
+      :value="data[field]"
       @change="manualChange"
     />
     <button
@@ -52,8 +52,8 @@ export default {
 
   methods: {
     // Контролируем количество у текущего элемента, если его изменили в ручную
-    manualChange() {
-      this.$emit("manual-change");
+    manualChange(event) {
+      this.$emit("manual-change", event.target.value);
     },
     //отнять
     reduceNumber() {
