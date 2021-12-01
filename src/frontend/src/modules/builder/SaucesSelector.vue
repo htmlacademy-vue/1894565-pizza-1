@@ -2,47 +2,37 @@
   <div class="ingredients__sauce">
     <p>Основной соус:</p>
 
-    <label
-      class="radio ingredients__input"
-      v-for="(sauce, i) in sauces"
-      :key="i"
-    >
-      <input
-        type="radio"
-        @change="addItem"
-        v-model="selected"
-        name="sauce"
-        :value="sauce"
-      />
-      <span>{{ sauce.name }}</span>
-    </label>
+    <Sauce
+      v-for="sauce in sauces"
+      :key="sauce.id"
+      :data="selected.sauce"
+      :sauce="sauce"
+      @add-item="addItem"
+    />
   </div>
 </template>
 
 <script>
+import Sauce from "@/common/components/builder/Sauce";
 export default {
   name: "SaucesSelector",
+  components: {
+    Sauce,
+  },
   props: {
     sauces: {
       type: Array,
       default: () => [],
     },
-  },
-
-  data() {
-    return {
-      selected: this.sauces[0],
-    };
-  },
-  mounted() {
-    this.addItem();
+    selected: {
+      type: Object,
+      default: () => {},
+    },
   },
   methods: {
-    addItem() {
-      this.$emit("add-item", this.selected, "sauce");
+    addItem(payload) {
+      this.$emit("add-item", payload, "sauce");
     },
   },
 };
 </script>
-
-<style scoped></style>

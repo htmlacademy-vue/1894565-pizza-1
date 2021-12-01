@@ -1,42 +1,40 @@
 <template>
-  <label
-    :class="`diameter__input diameter__input--${sizeClass(size.multiplier)}`"
-  >
+  <label :class="`dough__input dough__input--${doughClass(dough.name)}`">
     <input
       v-model="selected"
       type="radio"
-      name="diameter"
-      :value="size"
-      @change="addItem"
+      name="dough"
+      :value="dough"
       class="visually-hidden"
+      @change="addItem"
     />
-    <span>{{ size.name }}</span>
+    <b>{{ dough.name }}</b>
+    <span>{{ dough.description }}</span>
   </label>
 </template>
 
 <script>
 export default {
-  name: "Size.vue",
+  name: "Dough.vue",
   props: {
-    size: {
+    dough: {
       type: Object,
       default: () => {},
     },
-    default: {
+    data: {
       type: Object,
       default: () => {},
     },
   },
   data() {
     return {
-      selected: this.default,
+      selected: this.data,
     };
   },
+
   methods: {
-    sizeClass(multiplier) {
-      if (multiplier === 1) return "small";
-      if (multiplier === 2) return "normal";
-      if (multiplier === 3) return "big";
+    doughClass(name) {
+      return name === "Толстое" ? "large" : "light";
     },
     addItem() {
       this.$emit("add-item", this.selected);

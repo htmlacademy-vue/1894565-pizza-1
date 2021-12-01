@@ -20,6 +20,14 @@ const routes = [
     },
   },
   {
+    path: "/pizza/:id",
+    name: "Index-edit",
+    component: Index,
+    meta: {
+      layout: "AppLayoutMain",
+    },
+  },
+  {
     path: "/cart",
     name: "Cart",
     component: Cart,

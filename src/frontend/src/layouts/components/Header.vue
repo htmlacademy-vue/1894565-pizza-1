@@ -11,7 +11,7 @@
       </router-link>
     </div>
     <div class="header__cart">
-      <router-link to="cart">0 ₽</router-link>
+      <router-link to="cart">{{ totalPrice }} ₽</router-link>
     </div>
     <div class="header__user">
       <router-link to="login" class="header__login"
@@ -24,6 +24,12 @@
 <script>
 export default {
   name: "Header",
+  props: {
+    totalPrice: {
+      type: Number,
+      default: 0,
+    },
+  },
 };
 </script>
 

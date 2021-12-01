@@ -17,9 +17,9 @@
               :index="index"
               @add-items="addItems"
               @start-drag="startDrag"
-              @add-ingredient="addIngredient"
-              @remove-ingredient="removeIngredient"
-              @validate-quantity="validateQuantity"
+              @manual-change="manualChange"
+              @increase-number="increaseNumber"
+              @reduce-number="reduceNumber"
             />
           </ul>
         </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Ingredient from "../../common/components/Ingredient";
+import Ingredient from "@/common/components/builder/Ingredient";
 
 export default {
   name: "IngredientsSelector",
@@ -49,25 +49,17 @@ export default {
     };
   },
   methods: {
-    validateQuantity(index) {
-      if (this.items[index].quantity > 3) {
-        this.items[index].quantity = 3;
-      } else if (this.items[index].quantity < 1) {
-        this.items[index].quantity = 0;
-      }
-      this.addItems();
+    // Контролируем количество у текущего элемента, если его изменили в ручную
+    manualChange(payload) {
+      this.$emit("manual-change", payload);
     },
-    addIngredient(index) {
-      if (this.items[index].quantity < 3) {
-        this.items[index].quantity++;
-        this.addItems();
-      }
+    //отнять
+    reduceNumber(payload) {
+      this.$emit("reduce-number", payload);
     },
-    removeIngredient(index) {
-      if (this.items[index].quantity >= 1) {
-        this.items[index].quantity--;
-        this.addItems();
-      }
+    //прибавить
+    increaseNumber(payload) {
+      this.$emit("increase-number", payload);
     },
     addItems() {
       this.$emit(
