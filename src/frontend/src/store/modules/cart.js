@@ -60,9 +60,10 @@ export default {
     },
 
     priceUpdate(state, payload) {
-      state[payload.field][payload.index].total_price =
-        state[payload.field][payload.index].price *
-        state[payload.field][payload.index].quantity;
+      let pizza = state[payload.field][payload.index];
+      if (pizza) {
+        pizza.total_price = pizza.price * pizza.quantity;
+      }
     },
   },
 
