@@ -9,11 +9,13 @@
       Перейти к конструктору<br />чтоб собрать ещё одну пиццу
     </p>
     <div class="footer__price">
-      <b>Итого: 2 228 ₽</b>
+      <b>Итого: {{ totalPrice }} ₽</b>
     </div>
 
     <div class="footer__submit">
-      <button type="submit" class="button">Оформить заказ</button>
+      <router-link :to="'/thanks-order'">
+        <button type="submit" class="button">Оформить заказ</button>
+      </router-link>
     </div>
   </section>
 </template>
@@ -21,6 +23,12 @@
 <script>
 export default {
   name: "FooterCart",
+  props: {
+    totalPrice: {
+      type: Number,
+      default: 0,
+    },
+  },
 };
 </script>
 
