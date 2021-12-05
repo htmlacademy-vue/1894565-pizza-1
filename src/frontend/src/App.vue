@@ -11,6 +11,9 @@ export default {
   components: {
     AppLayout,
   },
+  mounted() {
+    console.log(this.$api);
+  },
 };
 </script>
 
