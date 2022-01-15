@@ -7,8 +7,8 @@
         <dough
           v-for="dough in doughs"
           :key="dough.id"
+          :data="selected"
           :dough="dough"
-          :default="doughs[0]"
           @add-item="addItem"
         />
       </div>
@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import Dough from "@/common/components/Dough";
-
+import Dough from "@/common/components/builder/Dough";
 export default {
   name: "DoughSelector",
   components: {
@@ -29,13 +28,15 @@ export default {
       type: Array,
       default: () => [],
     },
+    selected: {
+      type: Object,
+      default: () => {},
+    },
   },
-  mounted() {
-    this.addItem();
-  },
+
   methods: {
-    addItem(selected) {
-      this.$emit("add-item", selected || this.doughs[0], "dough");
+    addItem(payload) {
+      this.$emit("add-item", payload, "dough");
     },
   },
 };

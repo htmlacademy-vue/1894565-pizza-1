@@ -2,11 +2,11 @@
   <div @drop="onDrop($event, 1)" @dragover.prevent @dragenter.prevent>
     <div class="content__pizza">
       <label class="input">
-        <span class="visually-hidden">{{ title }}</span>
         <input
           type="text"
-          v-model="title"
+          v-model="pizza.title"
           name="pizza_name"
+          @change="setTitle"
           placeholder="Введите название пиццы"
         />
       </label>
@@ -14,17 +14,31 @@
       <div class="content__constructor">
         <div
           :class="`pizza pizza--foundation--${doughClass(
-            product.dough.name
-          )}-${sauceClass(product.sauce.name)}`"
+            pizza.dough.name
+          )}-${sauceClass(pizza.sauce.name)}`"
         >
           <div class="pizza__wrapper">
-            <div
-              :class="`pizza__filling pizza__filling--${ingredientClass(
-                ingredient.image
-              )}`"
-              v-for="ingredient in product.ingredients"
-              :key="ingredient.id"
-            ></div>
+            <div v-for="ingredient in pizza.ingredients" :key="ingredient.id">
+              <div
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} `"
+              ></div>
+
+              <div
+                v-if="ingredient.quantity === 2"
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} pizza__filling--second`"
+              ></div>
+
+              <div
+                v-if="ingredient.quantity === 3"
+                :class="`pizza__filling pizza__filling--${ingredientClass(
+                  ingredient.image
+                )} pizza__filling--third`"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -38,47 +52,41 @@
 </template>
 
 <script>
-import TotalPrice from "@/common/components/TotalPrice";
+import TotalPrice from "@/common/components/builder/TotalPrice";
+import { mapState } from "vuex";
 export default {
   name: "PizzaView",
   components: {
     TotalPrice,
   },
-  props: {
-    pizza: {
-      type: Object,
-      default: () => {},
-    },
-  },
-  data() {
-    return {
-      title: "",
-      product: this.pizza,
-    };
-  },
+
   computed: {
+    ...mapState({
+      pizza: (state) => state.builder.pizza,
+    }),
+
     checkAvailabilityProducts() {
-      return this.product.ingredients.length > 0 && this.title.length > 0;
+      return this.pizza.ingredients.length > 0 && this.pizza.title.length > 0;
     },
 
     totalPrice() {
       let sumIngredients = 0;
-      let sauce = this.product.sauce.price;
-      let dough = this.product.dough.price;
-      let sizeMultipler = this.product.size.multiplier;
+      let sauce = this.pizza.sauce.price;
+      let dough = this.pizza.dough.price;
+      let sizeMultiplier = this.pizza.size.multiplier;
 
-      for (var i = 0; i < this.product.ingredients.length; i++) {
+      for (let i = 0; i < this.pizza.ingredients.length; i++) {
         sumIngredients +=
-          this.product.ingredients[i].price *
-          this.product.ingredients[i].quantity;
+          this.pizza.ingredients[i].price * this.pizza.ingredients[i].quantity;
       }
-      return (sumIngredients + sauce + dough) * sizeMultipler;
+      return (sumIngredients + sauce + dough) * sizeMultiplier;
     },
   },
   methods: {
     sauceClass(name) {
       return name === "Сливочный" ? "creamy" : "tomato";
     },
+
     doughClass(name) {
       return name === "Толстое" ? "big" : "small";
     },
@@ -94,12 +102,13 @@ export default {
       this.$emit("add-drop-item", JSON.parse(itemIndex));
     },
 
-    submit() {
-      let order = {};
-      order.product = this.product;
-      order.title = this.title;
-      order.price = this.totalPrice;
+    setTitle() {
+      this.$emit("add-item", this.pizza.title, "title");
+    },
 
+    submit() {
+      let order = this.pizza;
+      order.price = this.totalPrice;
       this.$emit("submit", order);
     },
   },

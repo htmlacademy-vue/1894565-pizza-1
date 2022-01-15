@@ -1,8 +1,10 @@
 export default {
   AUTH: "auth",
-  COLUMNS: "columns",
-  COMMENTS: "comments",
   USERS: "users",
-  TASKS: "tasks",
-  PiZZAS: "pizzas",
+  PIZZA: "pizza",
+  DOUGH: "dough",
+  INGREDIENTS: "ingredients",
+  SIZES: "sizes",
+  SAUCES: "sauces",
+  PROFILE: "profile",
 };

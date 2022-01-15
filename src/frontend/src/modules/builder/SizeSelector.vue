@@ -2,13 +2,12 @@
   <div class="content__diameter">
     <div class="sheet">
       <h2 class="title title--small sheet__title">Выберите размер</h2>
-
       <div class="sheet__content diameter">
         <size
-          v-for="size in sizes"
-          :key="size.id"
-          :default="sizes[0]"
-          :size="size"
+          v-for="item in sizes"
+          :key="item.id"
+          :size="item"
+          :data="selected"
           @add-item="addItem"
         />
       </div>
@@ -17,7 +16,8 @@
 </template>
 
 <script>
-import Size from "@/common/components/Size";
+import Size from "@/common/components/builder/Size";
+
 export default {
   name: "SizeSelector",
   components: { Size },
@@ -26,13 +26,14 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  mounted() {
-    this.addItem();
+    selected: {
+      type: Object,
+      default: () => {},
+    },
   },
   methods: {
-    addItem(selected) {
-      this.$emit("add-item", selected || this.sizes[0], "size");
+    addItem(payload) {
+      this.$emit("add-item", payload, "size");
     },
   },
 };

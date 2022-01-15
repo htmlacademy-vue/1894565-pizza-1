@@ -11,15 +11,15 @@
 
           <ul class="ingredients__list">
             <ingredient
-              v-for="(item, index) in items"
+              v-for="(item, index) in ingredients"
               :key="item.id"
               :item="item"
               :index="index"
               @add-items="addItems"
               @start-drag="startDrag"
-              @add-ingredient="addIngredient"
-              @remove-ingredient="removeIngredient"
-              @validate-quantity="validateQuantity"
+              @manual-change="manualChange"
+              @increase-number="increaseNumber(index)"
+              @reduce-number="reduceNumber(index)"
             />
           </ul>
         </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Ingredient from "../../common/components/Ingredient";
+import Ingredient from "@/common/components/builder/Ingredient";
 
 export default {
   name: "IngredientsSelector",
@@ -45,29 +45,20 @@ export default {
   data() {
     return {
       selected: [],
-      items: this.ingredients,
     };
   },
   methods: {
-    validateQuantity(index) {
-      if (this.items[index].quantity > 3) {
-        this.items[index].quantity = 3;
-      } else if (this.items[index].quantity < 1) {
-        this.items[index].quantity = 0;
-      }
-      this.addItems();
+    // Контролируем количество у текущего элемента, если его изменили в ручную
+    manualChange(payload) {
+      this.$emit("manual-change", payload);
     },
-    addIngredient(index) {
-      if (this.items[index].quantity < 3) {
-        this.items[index].quantity++;
-        this.addItems();
-      }
+    //отнять
+    reduceNumber(index) {
+      this.$emit("reduce-number", index);
     },
-    removeIngredient(index) {
-      if (this.items[index].quantity >= 1) {
-        this.items[index].quantity--;
-        this.addItems();
-      }
+    //прибавить
+    increaseNumber(index) {
+      this.$emit("increase-number", index);
     },
     addItems() {
       this.$emit(

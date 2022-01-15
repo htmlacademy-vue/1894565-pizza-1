@@ -1,41 +1,36 @@
 <template>
-  <label :class="`dough__input dough__input--${doughClass(dough.name)}`">
+  <label class="radio ingredients__input">
     <input
       type="radio"
-      name="dough"
       v-model="selected"
-      :value="dough"
+      name="sauce"
+      :value="sauce"
       @change="addItem"
-      class="visually-hidden"
     />
-    <b>{{ dough.name }}</b>
-    <span>{{ dough.description }}</span>
+    <span>{{ sauce.name }}</span>
   </label>
 </template>
 
 <script>
 export default {
-  name: "Dough.vue",
+  name: "Sauce.vue",
   props: {
-    dough: {
+    sauce: {
       type: Object,
       default: () => {},
     },
-    default: {
+    data: {
       type: Object,
       default: () => {},
     },
   },
   data() {
     return {
-      selected: this.default,
+      selected: this.data,
     };
   },
 
   methods: {
-    doughClass(name) {
-      return name === "Толстое" ? "large" : "light";
-    },
     addItem() {
       this.$emit("add-item", this.selected);
     },

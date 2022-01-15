@@ -98,33 +98,47 @@ export class AuthApiService extends BaseApiService {
 // Наследуемся от CRUD API-сервиса
 export class PizzaApiService extends CrudApiService {
   constructor(notifier) {
-    super("pizzas", notifier);
+    super("pizza", notifier);
   }
 
-  // Получение списка задач
-  async query(config = {}) {
-    console.log(123);
-    return await super.query(config);
+  async ingredients(config = {}) {
+    return await axios.get(`ingredients`, config);
   }
 
-  // Получение 1 задачи по id
-  async get(id, config = {}) {
-    const { data } = await axios.get(`tasks/${id}`, config);
-    return this._normalize(data);
+  async sizes(config = {}) {
+    return await axios.get(`sizes`, config);
   }
 
-  // Создание новой задачи
-  async post(task) {
-    const { data: newTask } = await axios.post(
-      "tasks",
-      this._createRequest(task)
-    );
-    return this._normalize(newTask);
+  async sauces(config = {}) {
+    return await axios.get(`sauces`, config);
   }
 
-  // Обновление 1 задачи
-  async put(task) {
-    await axios.put(`tasks/${task.id}`, this._createRequest(task));
-    return this._normalize(task);
+  async dough(config = {}) {
+    return await axios.get(`dough`, config);
+  }
+
+  async addresses(config = {}) {
+    return await axios.get(`addresses`, config);
+  }
+
+  async address(id, config = {}) {
+    const { data } = await axios.get(`addresses/${id}`, config);
+    return data;
+  }
+
+  async addAddress(body) {
+    await axios.post("addresses", body);
+  }
+
+  async updateAddress(address) {
+    await axios.put(`addresses/${address.id}`, address);
+  }
+
+  async deleteAddress(id) {
+    await axios.delete(`addresses/${id}`);
+  }
+
+  async addOrder(order) {
+    await axios.post("orders", order);
   }
 }
