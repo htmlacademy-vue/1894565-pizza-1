@@ -141,4 +141,9 @@ export class PizzaApiService extends CrudApiService {
   async addOrder(order) {
     await axios.post("orders", order);
   }
+
+  async getOrders() {
+    const { data } = await axios.get("orders");
+    return data;
+  }
 }

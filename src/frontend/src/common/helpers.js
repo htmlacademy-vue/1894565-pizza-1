@@ -12,5 +12,6 @@ export const createResources = (notifier) => {
     [resources.AUTH]: new AuthApiService(notifier),
     [resources.PIZZA]: new PizzaApiService(notifier),
     [resources.PROFILE]: new PizzaApiService(notifier),
+    [resources.ORDERS]: new PizzaApiService(notifier),
   };
 };

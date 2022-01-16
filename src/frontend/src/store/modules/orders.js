@@ -1,9 +1,21 @@
 export default {
-  state: {},
+  state: {
+    orders: [],
+  },
 
   getters: {},
 
-  mutations: {},
+  mutations: {
+    getOrders(state) {
+      this.$api.orders.getOrders().then((res) => {
+        state.orders = res;
+      });
+    },
+  },
 
-  actions: {},
+  actions: {
+    getOrders({ commit }) {
+      commit("getOrders");
+    },
+  },
 };

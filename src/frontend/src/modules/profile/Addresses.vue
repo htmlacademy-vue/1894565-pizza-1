@@ -7,15 +7,10 @@
       :data="address"
       @delete-address="deleteAddress(address.id)"
       @edit-address="editAddress"
-      @switch-edit-mode-addresses="switchEditModeAddresses(index)"
     />
 
     <div class="layout__address">
-      <form
-        action="test.html"
-        method="post"
-        class="address-form address-form--opened sheet"
-      >
+      <div class="address-form address-form--opened sheet">
         <div class="address-form__header">
           <b>Новый адрес</b>
         </div>
@@ -85,7 +80,7 @@
             Добавить новый адрес
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -128,10 +123,10 @@ export default {
       this.$store
         .dispatch("createAddress", {
           userId: this.userId,
-          ...this.address,
+          ...this.form,
         })
         .then(() => {
-          this.address = {
+          this.form = {
             name: "",
             street: "",
             building: "",

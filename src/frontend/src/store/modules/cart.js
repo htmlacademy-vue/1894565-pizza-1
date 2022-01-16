@@ -73,7 +73,7 @@ export default {
     sendOrder(state, payload) {
       let misc = state.additional_products.map((item) => {
         return {
-          id: item.id,
+          miscId: item.id,
           quantity: item.quantity,
         };
       });
@@ -88,7 +88,7 @@ export default {
           (pizza.sizeId = product.size.id),
           (pizza.ingredients = product.ingredients.map((ingredient) => {
             return {
-              id: ingredient.id,
+              ingredientId: ingredient.id,
               quantity: ingredient.quantity,
             };
           }));

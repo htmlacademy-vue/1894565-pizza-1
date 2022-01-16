@@ -7,4 +7,5 @@ export default {
   SIZES: "sizes",
   SAUCES: "sauces",
   PROFILE: "profile",
+  ORDERS: "orders",
 };
