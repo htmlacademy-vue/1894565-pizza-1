@@ -75,16 +75,16 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === "Login") {
-    if (jwt.getToken()) {
-      next("/");
-    }
-  }
+  const publicPages = ["Index", "Index-edit", "Cart", "ThanksOrder", "Login"];
 
-  if (!jwt.getToken() && to.name !== "Login") {
-    next("/login");
-  } else {
+  if (publicPages.some((page) => page === to.name)) {
     next();
+  } else {
+    if (jwt.getToken()) {
+      next();
+    } else {
+      next("/login");
+    }
   }
 });
 

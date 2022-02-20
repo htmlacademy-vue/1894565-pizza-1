@@ -77,7 +77,7 @@
 
 <script>
 import { mapState } from "vuex";
-
+import jwt from "@/services/jwt.service";
 export default {
   name: "OrderInfo",
   props: {
@@ -103,10 +103,17 @@ export default {
         },
       ];
 
-      return [...default_options, ...this.addresses];
+      if (jwt.getToken()) {
+        return [...default_options, ...this.addresses];
+      } else {
+        return default_options;
+      }
     },
   },
 
+  async created() {
+    await this.$store.dispatch("addresses");
+  },
   data() {
     return {
       data: this.contact,

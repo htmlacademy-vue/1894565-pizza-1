@@ -13,7 +13,9 @@
     </div>
 
     <div class="footer__submit">
-      <button @click="sendOrder" class="button">Оформить заказ</button>
+      <button @click="sendOrder" :disabled="!isValidOrder" class="button">
+        Оформить заказ
+      </button>
     </div>
   </section>
 </template>
@@ -32,15 +34,34 @@ export default {
       type: Object,
       default: () => {},
     },
+    pizzas: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState({
       id: (state) => state.auth.me.id,
     }),
+    isValidOrder() {
+      if (this.pizzas.length === 0) {
+        return false;
+      }
+
+      if (this.orderInfo.id === "new_address") {
+        if (!this.orderInfo.street || !this.orderInfo.building) {
+          return false;
+        }
+      }
+      return true;
+    },
   },
+
   methods: {
     sendOrder() {
-      this.$store.dispatch("sendOrder", this.id);
+      this.$store.dispatch("sendOrder", this.id).then(() => {
+        this.$router.push("/thanks-order");
+      });
     },
   },
 };

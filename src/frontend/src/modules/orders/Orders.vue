@@ -18,8 +18,10 @@ export default {
       orders: (state) => state.orders.orders,
     }),
   },
-  created() {
-    this.$store.dispatch("getOrders");
+  async created() {
+    await this.$store.dispatch("loadComponents");
+    await this.$store.dispatch("loadMisc");
+    await this.$store.dispatch("getOrders");
   },
 };
 </script>

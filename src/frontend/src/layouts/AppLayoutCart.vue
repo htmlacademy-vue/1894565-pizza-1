@@ -2,7 +2,12 @@
   <div class="layout-form">
     <Header :total-price="totalPrice" />
     <slot />
-    <Footer class="footer" :order-info="order_info" :total-price="totalPrice" />
+    <Footer
+      class="footer"
+      :order-info="order_info"
+      :pizzas="pizzas"
+      :total-price="totalPrice"
+    />
   </div>
 </template>
 

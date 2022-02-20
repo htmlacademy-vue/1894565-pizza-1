@@ -1,6 +1,6 @@
 <template>
   <div class="popup">
-    <router-link to="/card" class="close">
+    <router-link :to="pathLink" class="close">
       <span class="visually-hidden">Закрыть попап</span>
     </router-link>
     <div class="popup__title">
@@ -8,13 +8,19 @@
     </div>
     <p>Мы начали готовить Ваш заказ, скоро привезём его вам ;)</p>
     <div class="popup__button">
-      <router-link to="/order" class="button">Отлично, я жду!</router-link>
+      <router-link :to="pathLink" class="button">Отлично, я жду!</router-link>
     </div>
   </div>
 </template>
 
 <script>
+import jwt from "@/services/jwt.service";
 export default {
   name: "ThanksOrder",
+  computed: {
+    pathLink() {
+      return jwt.getToken() ? "/orders" : "/";
+    },
+  },
 };
 </script>

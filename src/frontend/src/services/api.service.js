@@ -9,30 +9,19 @@ class BaseApiService {
   }
 }
 
-// класс для получение данных методом GET
 export class ReadOnlyApiService extends BaseApiService {
-  // resource — приватное свойство класса. Добавляем его к базовому URL, чтобы получить
-  // финальный URL, на который нужно отправлять запросы
   #resource;
   constructor(resource, notifier) {
     super(notifier);
     this.#resource = resource;
   }
 
-  // запрос на получение списка сущностей
-  async query(config = {}) {
-    const { data } = await axios.get(this.#resource, config);
-    return data;
-  }
-
-  // запрос на получение одной сущности по id
   async get(id, config = {}) {
     const { data } = await axios.get(`${this.#resource}/${id}`, config);
     return data;
   }
 }
 
-// класс для работы методов POST, PUT, DELETE
 export class CrudApiService extends ReadOnlyApiService {
   #resource;
   constructor(resource, notifier) {
@@ -117,6 +106,10 @@ export class PizzaApiService extends CrudApiService {
     return await axios.get(`dough`, config);
   }
 
+  async misc(config = {}) {
+    return await axios.get(`misc`, config);
+  }
+
   async addresses(config = {}) {
     return await axios.get(`addresses`, config);
   }
@@ -145,5 +138,9 @@ export class PizzaApiService extends CrudApiService {
   async getOrders() {
     const { data } = await axios.get("orders");
     return data;
+  }
+
+  async deleteOrder(id) {
+    await axios.delete(`orders/${id}`);
   }
 }

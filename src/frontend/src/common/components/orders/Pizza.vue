@@ -9,28 +9,58 @@
         alt="Капричоза"
       />
       <div class="product__text">
-        <h2>{{ pizza.name }}</h2>
+        <h2>{{ pizza.title }}</h2>
         <ul>
-          <li>30 см, на тонком тесте</li>
-          <li>Соус: томатный</li>
           <li>
-            Начинка: грибы, лук, ветчина, пармезан, ананас, бекон, блю чиз
+            Размер:
+            <span style="text-transform: lowercase">{{ size }}</span
+            >, Тесто: <span style="text-transform: lowercase">{{ dough }}</span
+            >.
+          </li>
+          <li>
+            Соус:
+            <span style="text-transform: lowercase">{{ sauce }}</span>
+          </li>
+          <li>
+            Начинка:
+            <span style="text-transform: lowercase"> {{ ingredients }} </span>
           </li>
         </ul>
       </div>
     </div>
 
-    <p class="order__price">782 ₽</p>
+    <p class="order__price">{{ `${pizza.quantity}x${price} ₽` }}</p>
   </li>
 </template>
 
 <script>
+import { calculateCostOfPizza } from "@/common/pricePizza.js";
 export default {
   name: "Pizza",
   props: {
     pizza: {
       type: Object,
       default: () => {},
+    },
+  },
+
+  computed: {
+    ingredients() {
+      let names = this.pizza.ingredients.map((ingredient) => ingredient.name);
+      return names.join(", ");
+    },
+
+    size() {
+      return this.pizza.size.name;
+    },
+    dough() {
+      return this.pizza.dough.name;
+    },
+    sauce() {
+      return this.pizza.sauce.name;
+    },
+    price() {
+      return calculateCostOfPizza(this.pizza);
     },
   },
 };

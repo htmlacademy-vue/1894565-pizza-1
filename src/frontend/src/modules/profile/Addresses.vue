@@ -118,6 +118,10 @@ export default {
     };
   },
 
+  async created() {
+    await this.$store.dispatch("addresses");
+  },
+
   methods: {
     addAddress() {
       this.$store

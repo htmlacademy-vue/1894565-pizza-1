@@ -1,5 +1,5 @@
 import { sumBy } from "lodash";
-
+import { calculateCostOfPizza } from "@/common/pricePizza.js";
 export default {
   state: {
     products: [],
@@ -20,17 +20,42 @@ export default {
 
     totalPrice(state) {
       return (
-        sumBy(state.products, (pizza) => pizza.total_price) +
-        sumBy(state.additional_products, (product) => product.total_price)
+        sumBy(state.products, (pizza) => pizza.price * pizza.quantity) +
+        sumBy(
+          state.additional_products,
+          (product) => product.price * product.quantity
+        )
       );
     },
   },
 
   mutations: {
     addProduct(state, payload) {
-      payload.item.quantity = 1;
+      if (!payload.item.id) {
+        payload.item.quantity = 1;
+      }
+
+      if (payload.field === "products") {
+        payload.item.price = calculateCostOfPizza(payload.item);
+      }
+
       payload.item.total_price = payload.item.price * payload.item.quantity;
-      state[payload.field].push(payload.item);
+      if (payload.field === "products") {
+        state.products.push(payload.item);
+      }
+
+      if (payload.field === "additional_products") {
+        state.additional_products = payload.item;
+      }
+    },
+
+    loadMisc(state, payload) {
+      state.additional_products = payload.map((item) => {
+        return {
+          ...item,
+          quantity: 0,
+        };
+      });
     },
 
     increaseNumber(state, payload) {
@@ -96,24 +121,43 @@ export default {
       });
 
       let address = {};
-      address.street = state.order_info.street;
-      address.building = state.order_info.building;
-      address.flat = state.order_info.flat;
-      address.comment = state.order_info.comment || "";
 
-      this.$api.pizza.addOrder({
-        userId: payload,
-        phone: state.order_info.phone,
-        misc,
-        pizzas,
-        address,
-      });
+      if (state.order_info.id === "new_address") {
+        address.street = state.order_info.street;
+        address.building = state.order_info.building;
+        address.flat = state.order_info.flat;
+        address.comment = state.order_info.comment || "";
+      } else if (state.order_info.id === "pickup") {
+        address = null;
+      } else {
+        address.id = state.order_info.id;
+      }
+
+      this.$api.pizza
+        .addOrder({
+          userId: payload,
+          phone: state.order_info.phone,
+          misc,
+          pizzas,
+          address,
+        })
+        .then(() => {
+          state.products = [];
+        });
+    },
+
+    cleanCart(state) {
+      state.products = [];
     },
   },
 
   actions: {
     addProduct({ commit }, payload) {
       commit("addProduct", payload);
+    },
+
+    loadMisc({ commit }) {
+      this.$api.pizza.misc().then((res) => commit("loadMisc", res.data));
     },
 
     priceUpdate({ commit }, payload) {
@@ -141,6 +185,10 @@ export default {
 
     sendOrder({ commit }, payload) {
       commit("sendOrder", payload);
+    },
+
+    cleanCart({ commit }) {
+      commit("cleanCart");
     },
   },
 };

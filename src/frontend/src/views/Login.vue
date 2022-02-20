@@ -30,7 +30,9 @@
           />
         </label>
       </div>
-      <button class="button" @click="login">Авторизоваться</button>
+      <button class="button" :disabled="!isValid" @click="login">
+        Авторизоваться
+      </button>
     </form>
   </div>
 </template>
@@ -43,6 +45,13 @@ export default {
       password: "",
     };
   },
+
+  computed: {
+    isValid() {
+      return this.email && this.password;
+    },
+  },
+
   methods: {
     login(event) {
       event.preventDefault();

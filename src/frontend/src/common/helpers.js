@@ -1,7 +1,6 @@
 import resources from "@/common/enums/resource.js";
 import {
   AuthApiService,
-  //CrudApiService,
   ReadOnlyApiService,
   PizzaApiService,
 } from "@/services/api.service";
