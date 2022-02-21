@@ -9,7 +9,7 @@
           @change="setDelivery"
           class="select"
           style="width: 180px"
-          v-model="data"
+          v-model="deliveryMethod"
         >
           <option
             v-for="option in receivingOptions"
@@ -25,14 +25,17 @@
         <span>Контактный телефон:</span>
         <input
           type="text"
-          v-model="data.phone"
+          v-model="phone"
           name="tel"
           @change="setDelivery"
           placeholder="+7 999-999-99-99"
         />
       </label>
 
-      <div v-if="data.name === 'Новый адрес'" class="cart-form__address">
+      <div
+        v-if="deliveryMethod.name === 'Новый адрес'"
+        class="cart-form__address"
+      >
         <span class="cart-form__label">Новый адрес:</span>
 
         <div class="cart-form__input">
@@ -41,7 +44,7 @@
             <input
               type="text"
               @change="setDelivery"
-              v-model="data.street"
+              v-model="deliveryMethod.street"
               name="street"
             />
           </label>
@@ -53,7 +56,7 @@
             <input
               type="text"
               @change="setDelivery"
-              v-model="data.building"
+              v-model="deliveryMethod.building"
               name="building"
             />
           </label>
@@ -65,7 +68,7 @@
             <input
               type="text"
               @change="setDelivery"
-              v-model="data.flat"
+              v-model="deliveryMethod.flat"
               name="flat"
             />
           </label>
@@ -85,6 +88,16 @@ export default {
       type: Object,
       default: () => {},
     },
+  },
+
+  data() {
+    return {
+      phone: "",
+      deliveryMethod: {
+        id: "pickup",
+        name: "Заберу сам",
+      },
+    };
   },
 
   computed: {
@@ -114,14 +127,13 @@ export default {
   async created() {
     await this.$store.dispatch("addresses");
   },
-  data() {
-    return {
-      data: this.contact,
-    };
-  },
+
   methods: {
     setDelivery() {
-      this.$store.dispatch("setDelivery", this.data);
+      this.$store.dispatch("setDelivery", {
+        ...this.deliveryMethod,
+        phone: this.phone,
+      });
     },
   },
 };

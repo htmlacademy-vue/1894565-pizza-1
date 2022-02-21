@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="reloadAddressKey">
     <Address
       v-for="(address, index) in addresses"
       :key="address.id"
@@ -108,6 +108,7 @@ export default {
 
   data() {
     return {
+      reloadAddressKey: 0,
       form: {
         name: "",
         street: "",
@@ -148,6 +149,7 @@ export default {
     editAddress(address) {
       this.$store.dispatch("editAddress", address).then(() => {
         this.$store.dispatch("addresses");
+        this.reloadAddressKey++;
       });
     },
   },

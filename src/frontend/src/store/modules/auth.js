@@ -1,5 +1,6 @@
 import jwt from "../../services/jwt.service";
 import router from "../../router";
+import { uniqueId } from "lodash";
 
 export default {
   state: {
@@ -10,77 +11,93 @@ export default {
   getters: {},
 
   mutations: {
-    async login(state, payload) {
-      this.$api.auth.login(payload).then((res) => {
-        jwt.saveToken(res.token);
-        this.$api.auth.setAuthHeader();
-        this.$api.auth.getMe().then((res) => {
-          state.me = res;
-        });
-        router.push("/").then(() => {});
-      });
+    login(state, payload) {
+      state.me = payload;
+      router.push("/").then(() => {});
     },
 
     logout(state) {
-      this.$api.auth.setAuthHeader();
-      this.$api.auth.logout().then(() => {
-        jwt.destroyToken();
-        state.me = {};
-        router.push("/login").then(() => {});
-      });
+      state.me = {};
+      router.push("/login").then(() => {});
     },
 
-    me(state) {
-      this.$api.auth.setAuthHeader();
-      this.$api.auth.getMe().then((res) => {
-        state.me = res;
-      });
+    me(state, payload) {
+      state.me = payload;
     },
 
-    addresses(state) {
-      this.$api.auth.setAuthHeader();
-      this.$api.profile.addresses().then((res) => {
-        state.addresses = res.data;
-      });
+    addresses(state, payload) {
+      state.addresses = payload;
     },
 
-    createAddress(state, payload) {
-      this.$api.auth.setAuthHeader();
-      this.$api.profile.addAddress(payload).then(() => {});
-    },
-
-    deleteAddress(state, id) {
-      this.$api.profile.deleteAddress(id).then(() => {});
+    addAddress(state, payload) {
+      payload.id = uniqueId();
+      state.addresses.push(payload);
     },
 
     editAddress(state, payload) {
-      let data = payload;
-      this.$api.profile.updateAddress(data).then(() => {});
+      let index = state.addresses.findIndex((item) => item.id === payload.id);
+      state.addresses[index] = payload;
+    },
+
+    deleteAddress(state, id) {
+      state.addresses = state.addresses.filter((address) => address.id !== id);
     },
   },
 
   actions: {
     login({ commit }, payload) {
-      commit("login", payload);
+      this.$api.auth.login(payload).then((res) => {
+        jwt.saveToken(res.token);
+        this.$api.auth.setAuthHeader();
+        this.$api.auth.getMe().then((res) => {
+          commit("login", res);
+        });
+      });
     },
+
     logout({ commit }) {
-      commit("logout");
+      this.$api.auth.setAuthHeader();
+      this.$api.auth.logout().then(() => {
+        jwt.destroyToken();
+        commit("logout");
+      });
     },
+
     me({ commit }) {
-      commit("me");
+      this.$api.auth.setAuthHeader();
+      this.$api.auth.getMe().then((res) => {
+        commit("me", res);
+      });
     },
+
     addresses({ commit }) {
-      commit("addresses");
+      if (jwt.getToken()) {
+        this.$api.auth.setAuthHeader();
+        this.$api.profile.addresses().then((res) => {
+          commit("addresses", res.data);
+        });
+      }
     },
+
     createAddress({ commit }, payload) {
-      commit("createAddress", payload);
+      this.$api.auth.setAuthHeader();
+      this.$api.profile.addAddress(payload).then((res) => {
+        commit("addAddress", res.data);
+      });
     },
+
     deleteAddress({ commit }, payload) {
-      commit("deleteAddress", payload);
+      this.$api.profile.deleteAddress(payload).then(() => {
+        commit("deleteAddress", payload);
+      });
     },
+
     editAddress({ commit }, payload) {
-      commit("editAddress", payload);
+      this.$api.profile.updateAddress(payload).then(() => {
+        commit("editAddress", payload);
+      });
     },
+
     switchEditModeAddresses({ commit }, index) {
       commit("switchEditModeAddresses", index);
     },

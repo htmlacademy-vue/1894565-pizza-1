@@ -59,9 +59,7 @@ export default {
 
   methods: {
     sendOrder() {
-      this.$store.dispatch("sendOrder", this.id).then(() => {
-        this.$router.push("/thanks-order");
-      });
+      this.$store.dispatch("sendOrder", this.id);
     },
   },
 };

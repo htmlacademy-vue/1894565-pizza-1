@@ -15,7 +15,6 @@ export default {
         const misc = rootState.cart.additional_products;
 
         orders.forEach((order) => {
-          console.log(order);
           const pizzas = [];
           if (order.orderPizzas) {
             order.orderPizzas.forEach((item) => {

@@ -1,5 +1,6 @@
 import { sumBy } from "lodash";
 import { calculateCostOfPizza } from "@/common/pricePizza.js";
+import router from "../../router";
 export default {
   state: {
     products: [],
@@ -103,6 +104,10 @@ export default {
         };
       });
 
+      state.additional_products.forEach((el) => {
+        el.quantity = 0;
+      });
+
       let pizzas = [];
       state.products.forEach((product) => {
         let pizza = {};
@@ -127,23 +132,19 @@ export default {
         address.building = state.order_info.building;
         address.flat = state.order_info.flat;
         address.comment = state.order_info.comment || "";
-      } else if (state.order_info.id === "pickup") {
+      } else if (state.order_info.id && state.order_info.id === "pickup") {
         address = null;
       } else {
         address.id = state.order_info.id;
       }
 
-      this.$api.pizza
-        .addOrder({
-          userId: payload,
-          phone: state.order_info.phone,
-          misc,
-          pizzas,
-          address,
-        })
-        .then(() => {
-          state.products = [];
-        });
+      this.dispatch("submitOrder", {
+        userId: payload,
+        phone: state.order_info.phone,
+        misc,
+        pizzas,
+        address,
+      });
     },
 
     cleanCart(state) {
@@ -154,6 +155,13 @@ export default {
   actions: {
     addProduct({ commit }, payload) {
       commit("addProduct", payload);
+    },
+
+    submitOrder({ commit }, payload) {
+      this.$api.pizza.addOrder(payload).then(() => {
+        commit("cleanCart");
+        router.push("/thanks-order").then(() => {});
+      });
     },
 
     loadMisc({ commit }) {

@@ -107,8 +107,6 @@ export default {
             state.components.ingredients[index] = el;
           }
         });
-
-        // state.components.ingredients[0] = state.pizza.ingredients[0];
       } else {
         if (!state.pizza.id) {
           state.pizza.dough = state.components.doughs[0];
@@ -121,18 +119,22 @@ export default {
 
   actions: {
     async loadComponents({ commit }, payload) {
-      await this.$api.pizza
+      const reqIngrs = this.$api.pizza
         .ingredients()
         .then((res) => commit("loadIngredients", res.data));
-      await this.$api.pizza
+      const reqSizes = this.$api.pizza
         .sizes()
         .then((res) => commit("loadSizes", res.data));
-      await this.$api.pizza
+
+      const reqSauces = this.$api.pizza
         .sauces()
         .then((res) => commit("loadSauces", res.data));
-      await this.$api.pizza
+
+      const reqDough = this.$api.pizza
         .dough()
         .then((res) => commit("loadDough", res.data));
+
+      await Promise.all([reqIngrs, reqSizes, reqSauces, reqDough]);
       commit("clearPizza");
       commit("setDefault", payload);
     },

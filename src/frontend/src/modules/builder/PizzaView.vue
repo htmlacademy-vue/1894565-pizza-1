@@ -22,18 +22,18 @@
               <div
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
-                )} `"
+                )}`"
               ></div>
 
               <div
-                v-if="ingredient.quantity === 2"
+                v-if="ingredient.quantity >= 2"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--second`"
               ></div>
 
               <div
-                v-if="ingredient.quantity === 3"
+                v-if="ingredient.quantity >= 3"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--third`"
