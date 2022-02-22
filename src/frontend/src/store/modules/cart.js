@@ -122,7 +122,6 @@ export default {
       });
 
       let address = {};
-      console.log(state.order_info);
       if (state.order_info.id === "new_address") {
         address.street = state.order_info.street;
         address.building = state.order_info.building;
