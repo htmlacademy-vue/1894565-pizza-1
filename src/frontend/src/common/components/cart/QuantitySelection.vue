@@ -3,7 +3,7 @@
     <button
       type="button"
       class="counter__button counter__button--minus"
-      :disabled="data[field] < 1"
+      :disabled="obj[field] < 1"
       @click="reduceNumber"
     >
       <span class="visually-hidden">Меньше</span>
@@ -12,14 +12,14 @@
       type="text"
       name="counter"
       class="counter__input"
-      :value="data[field]"
+      :value="obj[field]"
       @change="manualChange"
     />
     <button
       type="button"
       class="counter__button counter__button--plus"
       @click="increaseNumber"
-      :disabled="data[field] >= limit"
+      :disabled="obj[field] >= limit"
     >
       <span class="visually-hidden">Больше</span>
     </button>
@@ -45,9 +45,7 @@ export default {
     },
   },
   data() {
-    return {
-      data: this.obj,
-    };
+    return {};
   },
 
   methods: {

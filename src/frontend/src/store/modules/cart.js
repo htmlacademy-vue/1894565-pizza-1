@@ -1,15 +1,12 @@
 import { sumBy } from "lodash";
-
+import { calculateCostOfPizza } from "@/common/pricePizza.js";
+import router from "../../router";
 export default {
   state: {
     products: [],
     additional_products: [],
     order_info: {
-      street: "",
-      house: "",
-      apartment: "",
       phone: "",
-      receiving: "Заберу сам",
     },
   },
 
@@ -20,17 +17,42 @@ export default {
 
     totalPrice(state) {
       return (
-        sumBy(state.products, (pizza) => pizza.total_price) +
-        sumBy(state.additional_products, (product) => product.total_price)
+        sumBy(state.products, (pizza) => pizza.price * pizza.quantity) +
+        sumBy(
+          state.additional_products,
+          (product) => product.price * product.quantity
+        )
       );
     },
   },
 
   mutations: {
     addProduct(state, payload) {
-      payload.item.quantity = 1;
+      if (!payload.item.id) {
+        payload.item.quantity = 1;
+      }
+
+      if (payload.field === "products") {
+        payload.item.price = calculateCostOfPizza(payload.item);
+      }
+
       payload.item.total_price = payload.item.price * payload.item.quantity;
-      state[payload.field].push(payload.item);
+      if (payload.field === "products") {
+        state.products.push(payload.item);
+      }
+
+      if (payload.field === "additional_products") {
+        state.additional_products = payload.item;
+      }
+    },
+
+    loadMisc(state, payload) {
+      state.additional_products = payload.map((item) => {
+        return {
+          ...item,
+          quantity: 0,
+        };
+      });
     },
 
     increaseNumber(state, payload) {
@@ -65,11 +87,83 @@ export default {
         pizza.total_price = pizza.price * pizza.quantity;
       }
     },
+
+    setDelivery(state, payload) {
+      state.order_info = payload;
+    },
+
+    sendOrder(state, payload) {
+      let misc = state.additional_products.map((item) => {
+        return {
+          miscId: item.id,
+          quantity: item.quantity,
+        };
+      });
+
+      state.additional_products.forEach((el) => {
+        el.quantity = 0;
+      });
+
+      let pizzas = [];
+      state.products.forEach((product) => {
+        let pizza = {};
+        (pizza.name = product.title),
+          (pizza.quantity = product.quantity),
+          (pizza.sauceId = product.sauce.id),
+          (pizza.doughId = product.dough.id),
+          (pizza.sizeId = product.size.id),
+          (pizza.ingredients = product.ingredients.map((ingredient) => {
+            return {
+              ingredientId: ingredient.id,
+              quantity: ingredient.quantity,
+            };
+          }));
+        pizzas.push(pizza);
+      });
+
+      let address = {};
+      if (state.order_info.id === "new_address") {
+        address.street = state.order_info.street;
+        address.building = state.order_info.building;
+        address.flat = state.order_info.flat;
+        address.comment = state.order_info.comment || "";
+      } else if (
+        state.order_info.id === undefined ||
+        state.order_info.id === "pickup"
+      ) {
+        address = null;
+      } else {
+        address.id = state.order_info.id;
+      }
+
+      this.dispatch("submitOrder", {
+        userId: payload,
+        phone: state.order_info.phone,
+        misc,
+        pizzas,
+        address,
+      });
+    },
+
+    cleanCart(state) {
+      state.products = [];
+    },
   },
 
   actions: {
     addProduct({ commit }, payload) {
       commit("addProduct", payload);
+    },
+
+    submitOrder({ commit }, payload) {
+      this.$api.pizza.addOrder(payload).then(() => {
+        commit("cleanCart");
+        router.push("/thanks-order").then(() => {});
+      });
+    },
+
+    loadMisc({ commit }) {
+      this.$api.pizza.misc().then((res) => commit("loadMisc", res.data));
     },
 
     priceUpdate({ commit }, payload) {
@@ -89,6 +183,18 @@ export default {
     manualChange({ commit }, payload) {
       commit("manualChange", payload);
       commit("priceUpdate", payload);
+    },
+
+    setDelivery({ commit }, payload) {
+      commit("setDelivery", payload);
+    },
+
+    sendOrder({ commit }, payload) {
+      commit("sendOrder", payload);
+    },
+
+    cleanCart({ commit }) {
+      commit("cleanCart");
     },
   },
 };

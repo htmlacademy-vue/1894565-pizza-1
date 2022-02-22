@@ -1,9 +1,14 @@
 <template>
-  <form method="post" class="layout-form">
+  <div class="layout-form">
     <Header :total-price="totalPrice" />
     <slot />
-    <Footer class="footer" :total-price="totalPrice" />
-  </form>
+    <Footer
+      class="footer"
+      :order-info="order_info"
+      :pizzas="pizzas"
+      :total-price="totalPrice"
+    />
+  </div>
 </template>
 
 <script>
@@ -21,6 +26,7 @@ export default {
     ...mapState({
       pizzas: (state) => state.cart.products,
       additional_products: (state) => state.cart.additional_products,
+      order_info: (state) => state.cart.order_info,
     }),
     ...mapGetters(["totalPrice"]),
   },

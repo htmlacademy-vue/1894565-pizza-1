@@ -21,7 +21,7 @@
             field="quantity"
           />
           <div class="additional-list__price">
-            <b>× 56 ₽</b>
+            <b>× {{ product.price }} ₽</b>
           </div>
         </div>
       </li>
@@ -49,7 +49,6 @@ export default {
   },
 
   methods: {
-    //обработчик селектора для иконки ингридиента
     productClass(href) {
       let arr = href.split("/");
       return arr[arr.length - 1];

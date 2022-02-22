@@ -1,8 +1,12 @@
-import components from "@/static/pizza";
-
+import { isEmpty } from "lodash";
 export default {
   state: {
-    components: components,
+    components: {
+      ingredients: [],
+      doughs: [],
+      sizes: [],
+      sauces: [],
+    },
     pizza: {
       title: "",
       size: {},
@@ -23,17 +27,6 @@ export default {
       state.pizza = payload;
     },
 
-    setQuantity(state) {
-      let countable_ingredients = [];
-
-      state.components.ingredients.forEach((ingredient) => {
-        countable_ingredients.push(
-          Object.assign({}, ingredient, { quantity: 0 })
-        );
-      });
-      state.components.ingredients = countable_ingredients;
-    },
-
     clearPizza(state) {
       state.pizza = {
         title: "",
@@ -46,64 +39,106 @@ export default {
       };
     },
 
-    increaseNumberIngredients(state, payload) {
-      let ingredient = state.components.ingredients.find(
-        (item) => item.id === payload.id
-      );
+    increaseNumberIngredients(state, index) {
+      let ingredient = state.components.ingredients[index];
       ingredient.quantity++;
-
-      let ingredientPizza = state.pizza.ingredients.find(
+      let addedIngredient = state.pizza.ingredients.find(
         (item) => item.id === ingredient.id
       );
-
-      if (!ingredientPizza) {
-        state.pizza.ingredients.push(ingredient);
+      if (addedIngredient) {
+        addedIngredient = ingredient;
       } else {
-        ingredientPizza = ingredient;
+        state.pizza.ingredients.push(ingredient);
       }
     },
 
-    reduceNumberIngredients(state, payload) {
-      let ingredient = state.components.ingredients.find(
-        (item) => item.id === payload.id
-      );
-
-      if (ingredient) {
-        ingredient.quantity--;
-        if (ingredient.quantity === 0) {
-          state.pizza.ingredients = state.pizza.ingredients.filter(
-            (elem) => elem.id !== ingredient.id
-          );
-        }
-      }
-    },
-
-    manualChangeIngredients(state, index) {
+    reduceNumberIngredients(state, index) {
       let ingredient = state.components.ingredients[index];
+      ingredient.quantity--;
+      if (ingredient.quantity === 0) {
+        state.pizza.ingredients = state.pizza.ingredients.filter(
+          (elem) => elem.id !== ingredient.id
+        );
+      }
+    },
 
+    manualChangeIngredients(state, payload) {
+      let ingredient = state.components.ingredients[payload.index];
+      ingredient.quantity = parseInt(payload.value);
       if (ingredient.quantity < 0) {
         ingredient.quantity = 0;
       } else if (ingredient.quantity > 3) {
         ingredient.quantity = 3;
       }
-
-      if (!state.pizza.ingredients.find((item) => item.id === ingredient.id)) {
+      let addedIngredient = state.pizza.ingredients.find(
+        (item) => item.id === ingredient.id
+      );
+      if (addedIngredient) {
+        addedIngredient = ingredient;
+      } else {
         state.pizza.ingredients.push(ingredient);
       }
     },
 
+    loadIngredients(state, payload) {
+      state.components.ingredients = payload.map((item) => {
+        return { ...item, quantity: 0 };
+      });
+    },
+    loadSizes(state, payload) {
+      state.components.sizes = payload;
+    },
+    loadSauces(state, payload) {
+      state.components.sauces = payload;
+    },
+    loadDough(state, payload) {
+      state.components.doughs = payload;
+    },
+
     setDefault(state, payload) {
-      if (payload) {
+      if (!isEmpty(payload)) {
         state.pizza = payload;
+
+        state.components.ingredients.forEach((ingredient, index) => {
+          let el = state.pizza.ingredients.find(
+            (item) => item.id === ingredient.id
+          );
+          if (el) {
+            state.components.ingredients[index] = el;
+          }
+        });
       } else {
-        state.pizza.dough = state.components.dough[0];
-        state.pizza.size = state.components.sizes[0];
-        state.pizza.sauce = state.components.sauces[0];
+        if (!state.pizza.id) {
+          state.pizza.dough = state.components.doughs[0];
+          state.pizza.size = state.components.sizes[0];
+          state.pizza.sauce = state.components.sauces[0];
+        }
       }
     },
   },
 
   actions: {
+    async loadComponents({ commit }, payload) {
+      const reqIngrs = this.$api.pizza
+        .ingredients()
+        .then((res) => commit("loadIngredients", res.data));
+      const reqSizes = this.$api.pizza
+        .sizes()
+        .then((res) => commit("loadSizes", res.data));
+
+      const reqSauces = this.$api.pizza
+        .sauces()
+        .then((res) => commit("loadSauces", res.data));
+
+      const reqDough = this.$api.pizza
+        .dough()
+        .then((res) => commit("loadDough", res.data));
+
+      await Promise.all([reqIngrs, reqSizes, reqSauces, reqDough]);
+      commit("clearPizza");
+      commit("setDefault", payload);
+    },
+
     updatePizza({ commit }, payload) {
       commit("updatePizza", payload);
     },
@@ -122,14 +157,6 @@ export default {
 
     setPizza({ commit }, payload) {
       commit("setPizza", payload);
-    },
-
-    setDefault({ commit }, payload) {
-      commit("setDefault", payload);
-    },
-
-    setQuantity({ commit }) {
-      commit("setQuantity");
     },
 
     clearPizza({ commit }) {

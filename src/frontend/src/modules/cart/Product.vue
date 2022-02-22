@@ -6,7 +6,7 @@
         class="product__img"
         width="56"
         height="56"
-        alt="Капричоза"
+        :alt="data.title"
       />
       <div class="product__text">
         <h2>{{ data.title }}</h2>

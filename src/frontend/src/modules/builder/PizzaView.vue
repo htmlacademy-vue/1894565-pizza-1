@@ -22,18 +22,18 @@
               <div
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
-                )} `"
+                )}`"
               ></div>
 
               <div
-                v-if="ingredient.quantity === 2"
+                v-if="ingredient.quantity >= 2"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--second`"
               ></div>
 
               <div
-                v-if="ingredient.quantity === 3"
+                v-if="ingredient.quantity >= 3"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--third`"
@@ -75,7 +75,7 @@ export default {
       let dough = this.pizza.dough.price;
       let sizeMultiplier = this.pizza.size.multiplier;
 
-      for (var i = 0; i < this.pizza.ingredients.length; i++) {
+      for (let i = 0; i < this.pizza.ingredients.length; i++) {
         sumIngredients +=
           this.pizza.ingredients[i].price * this.pizza.ingredients[i].quantity;
       }

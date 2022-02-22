@@ -10,23 +10,64 @@
       <div class="sign-form__input">
         <label class="input">
           <span>E-mail</span>
-          <input type="email" name="email" placeholder="example@mail.ru" />
+          <input
+            type="email"
+            name="email"
+            v-model="email"
+            placeholder="example@mail.ru"
+          />
         </label>
       </div>
 
       <div class="sign-form__input">
         <label class="input">
           <span>Пароль</span>
-          <input type="password" name="pass" placeholder="***********" />
+          <input
+            type="password"
+            name="pass"
+            v-model="password"
+            placeholder="***********"
+          />
         </label>
       </div>
-      <button type="submit" class="button">Авторизоваться</button>
+      <button class="button" :disabled="!isValid" @click="login">
+        Авторизоваться
+      </button>
     </form>
   </div>
 </template>
 <script>
 export default {
   name: "Login",
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+
+  computed: {
+    isValid() {
+      return this.email && this.password;
+    },
+  },
+
+  methods: {
+    login(event) {
+      event.preventDefault();
+      this.$store
+        .dispatch("login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res) {
+            this.$store.dispatch("me");
+            this.$router.push("/");
+          }
+        });
+    },
+  },
 };
 </script>
 

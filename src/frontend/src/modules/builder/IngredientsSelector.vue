@@ -11,15 +11,15 @@
 
           <ul class="ingredients__list">
             <ingredient
-              v-for="(item, index) in items"
+              v-for="(item, index) in ingredients"
               :key="item.id"
               :item="item"
               :index="index"
               @add-items="addItems"
               @start-drag="startDrag"
               @manual-change="manualChange"
-              @increase-number="increaseNumber"
-              @reduce-number="reduceNumber"
+              @increase-number="increaseNumber(index)"
+              @reduce-number="reduceNumber(index)"
             />
           </ul>
         </div>
@@ -45,7 +45,6 @@ export default {
   data() {
     return {
       selected: [],
-      items: this.ingredients,
     };
   },
   methods: {
@@ -54,12 +53,12 @@ export default {
       this.$emit("manual-change", payload);
     },
     //отнять
-    reduceNumber(payload) {
-      this.$emit("reduce-number", payload);
+    reduceNumber(index) {
+      this.$emit("reduce-number", index);
     },
     //прибавить
-    increaseNumber(payload) {
-      this.$emit("increase-number", payload);
+    increaseNumber(index) {
+      this.$emit("increase-number", index);
     },
     addItems() {
       this.$emit(

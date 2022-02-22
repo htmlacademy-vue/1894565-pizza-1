@@ -7,11 +7,17 @@
 </template>
 <script>
 import AppLayout from "./layouts/AppLayout";
+import jwt from "./services/jwt.service";
 
 export default {
   name: "App",
   components: {
     AppLayout,
+  },
+  created() {
+    if (jwt.getToken()) {
+      this.$store.dispatch("me");
+    }
   },
 };
 </script>

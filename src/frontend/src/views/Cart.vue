@@ -45,8 +45,7 @@ import Product from "@/modules/cart/Product";
 import AdditionalProduct from "@/modules/cart/AdditionalProduct";
 import OrderInfo from "@/modules/cart/OrderInfo";
 import { mapState } from "vuex";
-import misc from "@/static/misc.json";
-import { cloneDeep, has } from "lodash";
+
 export default {
   name: "Cart",
   components: {
@@ -55,10 +54,9 @@ export default {
     OrderInfo,
   },
   data() {
-    return {
-      additional_products: misc,
-    };
+    return {};
   },
+
   computed: {
     ...mapState({
       pizzas: (state) => state.cart.products,
@@ -66,18 +64,13 @@ export default {
       order_info: (state) => state.cart.order_info,
     }),
   },
-  mounted() {
-    this.additional_products.forEach((item) => {
-      if (!has(item, "quantity")) {
-        if (!this.products.find((elem) => elem.id === item.id)) {
-          this.$store.dispatch("addProduct", {
-            item: cloneDeep(item),
-            field: "additional_products",
-          });
-        }
-      }
-    });
+
+  async created() {
+    if (this.products.length === 0) {
+      await this.$store.dispatch("loadMisc");
+    }
   },
+
   methods: {
     manualChange(payload) {
       this.$store.dispatch("manualChange", payload);

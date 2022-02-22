@@ -1,12 +1,12 @@
 <template>
   <li
     class="ingredients__item drag-el"
-    :draggable="ingredient.quantity < 3"
+    :draggable="item.quantity < 3"
     @dragstart="startDrag($event, index)"
-    :style="`cursor: ${ingredient.quantity < 3 ? 'pointer' : 'default'}`"
+    :style="`cursor: ${item.quantity < 3 ? 'pointer' : 'default'}`"
   >
-    <span :class="`filling filling--` + ingredientClass(ingredient.image)">{{
-      ingredient.name
+    <span :class="`filling filling--` + ingredientClass(item.image)">{{
+      item.name
     }}</span>
 
     <div class="counter counter--orange ingredients__counter">
@@ -15,7 +15,7 @@
         @reduce-number="reduceNumber"
         @increase-number="increaseNumber"
         :limit="3"
-        :obj="ingredient"
+        :obj="item"
         field="quantity"
       />
     </div>
@@ -39,11 +39,6 @@ export default {
       default: 0,
     },
   },
-  data() {
-    return {
-      ingredient: this.item,
-    };
-  },
 
   methods: {
     //обработчик селектора для иконки ингридиента
@@ -54,16 +49,16 @@ export default {
     },
 
     // Контролируем количество у текущего элемента, если его изменили в ручную
-    manualChange() {
-      this.$emit("manual-change", this.index);
+    manualChange(payload) {
+      this.$emit("manual-change", { value: payload, index: this.index });
     },
     //отнять
     reduceNumber() {
-      this.$emit("reduce-number", { ...this.ingredient });
+      this.$emit("reduce-number", { ...this.item });
     },
     //прибавить
     increaseNumber() {
-      this.$emit("increase-number", { ...this.ingredient });
+      this.$emit("increase-number", { ...this.item });
     },
 
     //обработчик начала перетаскивания

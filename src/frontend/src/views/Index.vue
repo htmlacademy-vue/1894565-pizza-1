@@ -4,26 +4,26 @@
       <form action="#" method="post">
         <div class="content__wrapper" :key="previewKey">
           <h1 class="title title--big">Конструктор пиццы</h1>
-
           <dough-selector
-            :doughs="components.dough"
+            :doughs="doughs"
             :selected="pizza.dough"
             @add-item="addItem"
           />
           <size-selector
-            :sizes="components.sizes"
+            :sizes="sizes"
             :selected="pizza.size"
             @add-item="addItem"
           />
           <ingredients-selector
-            :ingredients="components.ingredients"
+            v-if="ingredients"
+            :ingredients="ingredients"
             @add-items="addItem"
             @manual-change="manualChange"
             @increase-number="increaseNumber"
             @reduce-number="reduceNumber"
           >
             <sauces-selector
-              :sauces="components.sauces"
+              :sauces="sauces"
               :selected="pizza.sauce"
               @add-item="addItem"
             />
@@ -60,7 +60,6 @@ export default {
   data() {
     return {
       previewKey: 0,
-      ingredients: [],
       id: this.$route.params.id,
     };
   },
@@ -69,52 +68,48 @@ export default {
     ...mapGetters(["getPizza"]),
     ...mapState({
       pizza: (state) => state.builder.pizza,
-      components: (state) => state.builder.components,
+      ingredients: (state) => state.builder.components.ingredients,
+      doughs: (state) => state.builder.components.doughs,
+      sizes: (state) => state.builder.components.sizes,
+      sauces: (state) => state.builder.components.sauces,
     }),
   },
 
   mounted() {
-    if (this.id) {
-      let changedPizza = this.getPizza(parseInt(this.id));
-
-      if (!changedPizza) {
-        this.$router.push("/");
-        return;
-      }
-
-      this.$store
-        .dispatch("setDefault", this.getPizza(parseInt(this.id)))
-        .then(() => {
-          this.previewKey++;
-        });
-    } else {
-      this.$store.dispatch("setDefault", false).then(() => {
-        this.previewKey++;
-      });
-      this.$store.dispatch("setQuantity");
-    }
+    this.loadComponents();
   },
 
   methods: {
+    loadComponents() {
+      let changedPizza = {};
+      if (this.id) {
+        changedPizza = this.getPizza(parseInt(this.id));
+
+        if (!changedPizza) {
+          this.$router.push("/");
+        }
+      }
+      this.$store.dispatch("loadComponents", changedPizza).then(() => {
+        this.previewKey++;
+      });
+    },
+
     addItem(item, type) {
       this.$store.dispatch("updatePizza", { item, type });
     },
 
     addDropElement(index) {
-      this.$store.dispatch(
-        "increaseNumberIngredients",
-        this.components.ingredients[index]
-      );
+      this.$store.dispatch("increaseNumberIngredients", index);
     },
 
     manualChange(payload) {
       this.$store.dispatch("manualChangeIngredients", payload);
     },
-    increaseNumber(payload) {
-      this.$store.dispatch("increaseNumberIngredients", payload);
+    increaseNumber(index) {
+      this.$store.dispatch("increaseNumberIngredients", index);
     },
-    reduceNumber(payload) {
-      this.$store.dispatch("reduceNumberIngredients", payload);
+    reduceNumber(index) {
+      this.$store.dispatch("reduceNumberIngredients", index);
     },
 
     submit(order) {

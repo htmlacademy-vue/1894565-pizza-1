@@ -8,6 +8,7 @@ import ThanksOrder from "../views/ThanksOrder";
 import Login from "../views/Login";
 import Profile from "../views/Profile";
 
+import jwt from "../services/jwt.service";
 Vue.use(VueRouter);
 
 const routes = [
@@ -71,6 +72,20 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ["Index", "Index-edit", "Cart", "ThanksOrder", "Login"];
+
+  if (publicPages.some((page) => page === to.name)) {
+    next();
+  } else {
+    if (jwt.getToken()) {
+      next();
+    } else {
+      next("/login");
+    }
+  }
 });
 
 export default router;
