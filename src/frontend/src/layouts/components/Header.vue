@@ -33,6 +33,7 @@
 <script>
 import jwt from "../../services/jwt.service";
 import { mapState } from "vuex";
+
 export default {
   name: "Header",
   props: {
@@ -52,7 +53,10 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch("logout");
+      this.$store.dispatch("logout").then((res) => {
+        console.log(res);
+        this.$router.push("/login").then(() => {});
+      });
     },
   },
 };

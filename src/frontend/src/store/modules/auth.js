@@ -1,10 +1,10 @@
 import jwt from "../../services/jwt.service";
-import router from "../../router";
 import { uniqueId } from "lodash";
 
 export default {
   state: {
     me: {},
+    token: "",
     addresses: [],
   },
 
@@ -12,13 +12,12 @@ export default {
 
   mutations: {
     login(state, payload) {
-      state.me = payload;
-      router.push("/").then(() => {});
+      state.token = payload;
     },
 
     logout(state) {
       state.me = {};
-      router.push("/login").then(() => {});
+      state.token = "";
     },
 
     me(state, payload) {
@@ -30,8 +29,7 @@ export default {
     },
 
     addAddress(state, payload) {
-      payload.id = uniqueId();
-      state.addresses.push(payload);
+      state.addresses.push({ ...payload, id: uniqueId() });
     },
 
     editAddress(state, payload) {
@@ -45,14 +43,11 @@ export default {
   },
 
   actions: {
-    login({ commit }, payload) {
-      this.$api.auth.login(payload).then((res) => {
-        jwt.saveToken(res.token);
-        this.$api.auth.setAuthHeader();
-        this.$api.auth.getMe().then((res) => {
-          commit("login", res);
-        });
-      });
+    async login({ commit }, payload) {
+      const res = await this.$api.auth.login(payload);
+      jwt.saveToken(res.token);
+      commit("login", res);
+      return res.token;
     },
 
     logout({ commit }) {

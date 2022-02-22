@@ -29,7 +29,7 @@ export default {
         },
         {
           id: 2,
-          name: "Мои данныев",
+          name: "Мои данные",
           link: "Profile",
         },
       ],

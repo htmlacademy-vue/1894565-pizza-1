@@ -19,8 +19,8 @@ export default {
     }),
   },
   async created() {
-    await this.$store.dispatch("loadComponents");
     await this.$store.dispatch("loadMisc");
+    await this.$store.dispatch("loadComponents");
     await this.$store.dispatch("getOrders");
   },
 };

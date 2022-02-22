@@ -6,11 +6,7 @@ export default {
     products: [],
     additional_products: [],
     order_info: {
-      street: "",
-      building: "",
-      flat: "",
       phone: "",
-      receiving: "Заберу сам",
     },
   },
 
@@ -126,13 +122,16 @@ export default {
       });
 
       let address = {};
-
+      console.log(state.order_info);
       if (state.order_info.id === "new_address") {
         address.street = state.order_info.street;
         address.building = state.order_info.building;
         address.flat = state.order_info.flat;
         address.comment = state.order_info.comment || "";
-      } else if (state.order_info.id && state.order_info.id === "pickup") {
+      } else if (
+        state.order_info.id === undefined ||
+        state.order_info.id === "pickup"
+      ) {
         address = null;
       } else {
         address.id = state.order_info.id;

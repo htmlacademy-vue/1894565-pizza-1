@@ -55,10 +55,17 @@ export default {
   methods: {
     login(event) {
       event.preventDefault();
-      this.$store.dispatch("login", {
-        email: this.email,
-        password: this.password,
-      });
+      this.$store
+        .dispatch("login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          if (res) {
+            this.$store.dispatch("me");
+            this.$router.push("/");
+          }
+        });
     },
   },
 };
