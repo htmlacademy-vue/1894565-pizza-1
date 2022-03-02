@@ -2,7 +2,9 @@
   <li
     class="ingredients__item drag-el"
     :draggable="item.quantity < 3"
+    :id="`ingredient-${index}`"
     @dragstart="startDrag($event, index)"
+    @dragend="dragEnd(index)"
     :style="`cursor: ${item.quantity < 3 ? 'pointer' : 'default'}`"
   >
     <span :class="`filling filling--` + ingredientClass(item.image)">{{
@@ -24,6 +26,7 @@
 
 <script>
 import QuantitySelection from "@/common/components/cart/QuantitySelection";
+
 export default {
   name: "Ingredient.vue",
   components: {
@@ -63,10 +66,13 @@ export default {
 
     //обработчик начала перетаскивания
     startDrag(evt, index) {
+      document.getElementById(`ingredient-${index}`).style.opacity = "0.3";
       this.$emit("start-drag", evt, index);
+    },
+
+    dragEnd(index) {
+      document.getElementById(`ingredient-${index}`).style.opacity = "1";
     },
   },
 };
 </script>
-
-<style scoped></style>

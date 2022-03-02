@@ -20,6 +20,7 @@
           <div class="pizza__wrapper">
             <div v-for="ingredient in pizza.ingredients" :key="ingredient.id">
               <div
+                class="ingredient"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )}`"
@@ -54,6 +55,7 @@
 <script>
 import TotalPrice from "@/common/components/builder/TotalPrice";
 import { mapState } from "vuex";
+
 export default {
   name: "PizzaView",
   components: {
@@ -115,4 +117,19 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.ingredient {
+  animation: ingredient-show 1s ease-in-out;
+}
+
+@keyframes ingredient-show {
+  from {
+    display: none;
+    transform: scale(2);
+  }
+  to {
+    display: block;
+    transform: scale(1) rotate(360deg);
+  }
+}
+</style>
