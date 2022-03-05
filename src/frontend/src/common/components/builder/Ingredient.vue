@@ -1,15 +1,17 @@
 <template>
   <li
-    class="ingredients__item drag-el"
+    class="ingredients__item"
     :draggable="item.quantity < 3"
     :id="`ingredient-${index}`"
     @dragstart="startDrag($event, index)"
-    @dragend="dragEnd(index)"
-    :style="`cursor: ${item.quantity < 3 ? 'pointer' : 'default'}`"
+    :style="`cursor: ${item.quantity < 3 ? 'pointer' : 'default'};
+    }`"
   >
-    <span :class="`filling filling--` + ingredientClass(item.image)">{{
-      item.name
-    }}</span>
+    <span
+      :class="`filling filling--` + ingredientClass(item.image)"
+      :style="`font-weight: ${item.quantity > 0 ? '600' : '300'}`"
+      >{{ item.name }}</span
+    >
 
     <div class="counter counter--orange ingredients__counter">
       <quantity-selection
@@ -66,12 +68,7 @@ export default {
 
     //обработчик начала перетаскивания
     startDrag(evt, index) {
-      document.getElementById(`ingredient-${index}`).style.opacity = "0.3";
       this.$emit("start-drag", evt, index);
-    },
-
-    dragEnd(index) {
-      document.getElementById(`ingredient-${index}`).style.opacity = "1";
     },
   },
 };
