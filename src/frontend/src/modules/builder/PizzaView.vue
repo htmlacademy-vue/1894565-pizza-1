@@ -20,6 +20,7 @@
           <div class="pizza__wrapper">
             <div v-for="ingredient in pizza.ingredients" :key="ingredient.id">
               <div
+                class="ingredient-anim--first"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )}`"
@@ -27,6 +28,7 @@
 
               <div
                 v-if="ingredient.quantity >= 2"
+                class="ingredient-anim--second"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--second`"
@@ -34,6 +36,7 @@
 
               <div
                 v-if="ingredient.quantity >= 3"
+                class="ingredient-anim--third"
                 :class="`pizza__filling pizza__filling--${ingredientClass(
                   ingredient.image
                 )} pizza__filling--third`"
@@ -54,6 +57,7 @@
 <script>
 import TotalPrice from "@/common/components/builder/TotalPrice";
 import { mapState } from "vuex";
+
 export default {
   name: "PizzaView",
   components: {
@@ -115,4 +119,40 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.ingredient-anim {
+  &--first {
+    animation: ingredient-show 1s ease-in-out;
+  }
+
+  &--second {
+    animation: ingredient-show--reverse 1s ease-in-out;
+  }
+
+  &--third {
+    animation: ingredient-show 1s ease-in-out;
+  }
+}
+
+@keyframes ingredient-show {
+  from {
+    opacity: 0;
+    transform: scale(2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+@keyframes ingredient-show--reverse {
+  from {
+    opacity: 0;
+    transform: scale(2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(-360deg);
+  }
+}
+</style>
